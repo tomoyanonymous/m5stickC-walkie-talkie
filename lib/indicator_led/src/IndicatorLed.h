@@ -19,3 +19,4 @@ public:
 
   friend void update_indicator_task(void *param);
 };
+ 
