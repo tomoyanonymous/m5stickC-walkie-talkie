@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <M5Atom.h>
 #include <driver/i2s.h>
 #include <WiFi.h>
 
@@ -12,11 +12,7 @@
 #include "OutputBuffer.h"
 #include "config.h"
 
-#ifdef ARDUINO_TINYPICO
-#include "TinyPICOIndicatorLed.h"
-#else
-#include "GenericDevBoardIndicatorLed.h"
-#endif
+#include "M5AtomIndicatorLed.h"
 
 static void application_task(void *param)
 {
@@ -28,17 +24,10 @@ static void application_task(void *param)
 Application::Application()
 {
   m_output_buffer = new OutputBuffer(300 * 16);
-#ifdef USE_I2S_MIC_INPUT
-  m_input = new I2SMEMSSampler(I2S_NUM_0, i2s_mic_pins, i2s_mic_Config,128);
-#else
-  m_input = new ADCSampler(ADC_UNIT_1, ADC1_CHANNEL_7, i2s_adc_config);
-#endif
 
-#ifdef USE_I2S_SPEAKER_OUTPUT
+  m_input = new I2SMEMSSampler(I2S_NUM_0, i2s_mic_pins, i2s_mic_Config,128);
+
   m_output = new I2SOutput(I2S_NUM_0, i2s_speaker_pins);
-#else
-  m_output = new DACOutput(I2S_NUM_0);
-#endif
 
 #ifdef USE_ESP_NOW
   m_transport = new EspNowTransport(m_output_buffer,ESP_NOW_WIFI_CHANNEL);
@@ -48,11 +37,7 @@ Application::Application()
 
   m_transport->set_header(TRANSPORT_HEADER_SIZE,transport_header);
 
-#ifdef ARDUINO_TINYPICO
-  m_indicator_led = new TinyPICOIndicatorLed();
-#else
-  m_indicator_led = new GenericDevBoardIndicatorLed();
-#endif
+  m_indicator_led = new M5AtomIndicatorLed();
 
   if (I2S_SPEAKER_SD_PIN != -1)
   {
@@ -95,8 +80,6 @@ void Application::begin()
   // connected so show a solid green light
   m_indicator_led->set_default_color(0x00ff00);
   m_indicator_led->set_is_flashing(false, 0x00ff00);
-  // setup the transmit button
-  pinMode(GPIO_TRANSMIT_BUTTON, INPUT_PULLDOWN);
   // start off with i2S output running
   m_output->start(SAMPLE_RATE);
   // start the main task for the application
@@ -112,7 +95,7 @@ void Application::loop()
   while (true)
   {
     // do we need to start transmitting?
-    if (digitalRead(GPIO_TRANSMIT_BUTTON))
+    if (M5.Btn.read())
     {
       Serial.println("Started transmitting");
       m_indicator_led->set_is_flashing(true, 0xff0000);
@@ -122,7 +105,7 @@ void Application::loop()
       m_input->start();
       // transmit for at least 1 second or while the button is pushed
       unsigned long start_time = millis();
-      while (millis() - start_time < 1000 || digitalRead(GPIO_TRANSMIT_BUTTON))
+      while (millis() - start_time < 1000 || M5.Btn.read())
       {
         // read samples from the microphone
         int samples_read = m_input->read(samples, 128);
@@ -146,7 +129,7 @@ void Application::loop()
       digitalWrite(I2S_SPEAKER_SD_PIN, HIGH);
     }
     unsigned long start_time = millis();
-    while (millis() - start_time < 1000 || !digitalRead(GPIO_TRANSMIT_BUTTON))
+    while (millis() - start_time < 1000 || !M5.Btn.read())
     {
       // read from the output buffer (which should be getting filled by the transport)
       m_output_buffer->remove_samples(samples, 128);
