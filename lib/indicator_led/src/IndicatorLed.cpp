@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <M5Atom.h>
 #include <freertos/FreeRTOS.h>
 #include "IndicatorLed.h"
 
