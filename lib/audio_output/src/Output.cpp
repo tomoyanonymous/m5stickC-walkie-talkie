@@ -1,3 +1,4 @@
+#include <M5Atom.h>
 
 #include "Output.h"
 #include <esp_log.h>
