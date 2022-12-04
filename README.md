@@ -1,30 +1,19 @@
 # Overview
 
-We've made a Walkie-Talkie using the ESP32.
+Forked from the works of [ESP32 Walkie Talkie](https://github.com/atomic14/esp32-walkie-talkie) by atomic14, this is the M5Atom Lite version of the same project.
 
-[Explanatory video](https://www.youtube.com/watch?v=d_h38X4_eQQ)
+### Required Hardware
 
-[![Demo Video](https://img.youtube.com/vi/d_h38X4_eQQ/0.jpg)](https://www.youtube.com/watch?v=d_h38X4_eQQ)
+* 2 sets of M5Atom Lite
+* 2 sets of INMP441 omnidirectional i2s MEMS microphone
+* 2 sets of MAX98357 i2s amplifier
+* 2 sets of 4 or 8 Ohm Speaker (Min 3W preferred)
 
-Audio data is transmitted over either UDP broadcast or ESP-NOW. So the Walkie-Talkie will even work without a WiFi network!
-
-I'm using my own microphone board (available on Tindie: https://www.tindie.com/products/21519/) but the code will work equally well with any I2S microphone (e.g. the INMP441) and you can easily modify it to use the built-in ADC for analogue microphones.
-
-For output, I'm using an I2S amplifier breakout board which I'm using the drive a 4ohm speaker. Once again, you can modify the code to use the built-in DAC for output which will let you use headphones or an analogue amplifier board.
-
-I've got a great series of videos on ESP32 Audio which are a great resource for anyone who wants to learn more about audio on the ESP32 which you can find here: https://www.youtube.com/playlist?list=PL5vDt5AALlRfGVUv2x7riDMIOX34udtKD
-
-For this project I've 3D printed a case - you can access the Fusion 360 project here: https://a360.co/2PXgAUS
-
-I've also created a custom PCB - you can access the schematic here: https://easyeda.com/chris_9044/esp32-walkie-talkie
-
-The boards were manufactured by PCBWay and as always they've done a really great job. You can order the boards directly from PCBWay here: https://www.pcbway.com/project/shareproject/ESP32_Audio_Board_For_Walkie_Talkie.html
-
-And you can help support the channel by using my referral link: https://www.pcbway.com/setinvite.aspx?inviteid=403566 for other PCBs.
-
-However, you can also easily wire this up on breadboard - that's how I prototyped it. Everything is I2S based so it's just straightforward jumper wires.
+*If you use a breadboard, try to use shorter jumper cables since long or low quality jumper cables cause too much interference and noise for the INMP441 microphone.
 
 # Setup
+
+Audio data is transmitted over either UDP broadcast or ESP-NOW. So the Walkie-Talkie will even work without a WiFi network!
 
 Everything is configured from the `src/config.h` file. To use UDP Broadcast comment out the line:
 
@@ -32,7 +21,7 @@ Everything is configured from the `src/config.h` file. To use UDP Broadcast comm
 #define USE_ESP_NOW
 ```
 
-Make sure you update the WiFi SSID and Password:
+If you use UDP instead of ESP-NOW, make sure you update the WiFi SSID and Password:
 
 ```
 // WiFi credentials
@@ -44,6 +33,15 @@ The pins for the microphone and the amplifier board are all setup in the same `c
 
 # Building and Running
 
-I'm using PlatformIO for this project so you will need to have that installed. Open up the project and connect your ESP32. You should be able to just hit build and run.
+PlatformIO is required for this project so you will need to have that installed. Open up the project and connect your M5Atom. You should be able to just hit build and run.
 
-Obviously, you'll need two ESP32 boards and components to do anything :)
+# To be added
+
+1. Select high performance (louder) small size speakers
+2. Prepare a PCB which also stabilizes power for less noise 
+3. Prepare a 3D print enclosure
+4. Publish the code on github (It is a mess now, have to tidy it up)
+5. Home Assistant interface (Possibilities are endless)
+6. Batteries ?
+
+*Thanks once again to atomic14 for this great project...
