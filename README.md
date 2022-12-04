@@ -11,6 +11,10 @@ Forked from the works of [ESP32 Walkie Talkie](https://github.com/atomic14/esp32
 
 *If you use a breadboard, try to use shorter jumper cables since long or low quality jumper cables cause too much interference and noise for the INMP441 microphone.
 
+<p align="center">
+<img src="img/IMG_4034.jpg" width="400" height="300">
+</p>
+
 # Setup
 
 Audio data is transmitted over either UDP broadcast or ESP-NOW. So the Walkie-Talkie will even work without a WiFi network!
@@ -34,6 +38,10 @@ The pins for the microphone and the amplifier board are all setup in the same `c
 # Building and Running
 
 PlatformIO is required for this project so you will need to have that installed. Open up the project and connect your M5Atom. You should be able to just hit build and run.
+
+<p align="center">
+<img src="img/IMG_4037.jpg" width="400" height="300">
+</p>
 
 # To be added
 
