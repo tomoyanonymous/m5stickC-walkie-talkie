@@ -1,13 +1,13 @@
 #include <M5StickCPlus.h>
-#include "M5AtomIndicatorLed.h"
+#include "M5StickCIndicatorLed.h"
 
-M5AtomIndicatorLed::M5AtomIndicatorLed()
+M5StickCIndicatorLed::M5StickCIndicatorLed()
 {
   // pinMode(M5_LED, OUTPUT);
   M5.Lcd.setRotation(0);
 }
 
-void M5AtomIndicatorLed::set_led_rgb(uint32_t color)
+void M5StickCIndicatorLed::set_led_rgb(uint32_t color)
 {
 
   uint8_t R8 = (color & 0xFF0000) >> 16;

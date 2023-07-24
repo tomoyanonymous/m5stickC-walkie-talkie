@@ -15,7 +15,7 @@
 #include "OutputBuffer.h"
 #include "config.h"
 
-#include "M5AtomIndicatorLed.h"
+#include "M5StickCIndicatorLed.h"
 
 static void application_task(void *param)
 {
@@ -43,7 +43,7 @@ Application::Application()
 
   m_transport->set_header(TRANSPORT_HEADER_SIZE,transport_header);
 
-  m_indicator_led = new M5AtomIndicatorLed();
+  m_indicator_led = new M5StickCIndicatorLed();
 
   if constexpr (I2S_SPEAKER_SD_PIN != -1)
   {
