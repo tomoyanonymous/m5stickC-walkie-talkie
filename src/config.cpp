@@ -7,13 +7,17 @@ uint8_t transport_header[TRANSPORT_HEADER_SIZE] = {};
 
 
 // i2s config for using the internal ADC
-#if CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32S3
+#if CONFIG_IDF_TARGET_ESP32
 i2s_config_t i2s_adc_config = {
     .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_ADC_BUILT_IN),
     .sample_rate = SAMPLE_RATE,
     .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
     .channel_format = I2S_MIC_CHANNEL,
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 2, 0)
     .communication_format = I2S_COMM_FORMAT_STAND_MSB,
+#else
+    .communication_format = I2S_COMM_FORMAT_I2S_LSB,
+#endif
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 4,
     .dma_buf_len = 64,
@@ -28,7 +32,11 @@ i2s_config_t i2s_mic_Config = {
     .sample_rate = SAMPLE_RATE,
     .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
     .channel_format = I2S_MIC_CHANNEL,
-    .communication_format = I2S_COMM_FORMAT_STAND_I2S,
+#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 2, 0)
+    .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S),
+#else
+    .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S),
+#endif
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
     .dma_buf_count = 4,
     .dma_buf_len = 64,
