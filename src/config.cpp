@@ -28,7 +28,7 @@ i2s_config_t i2s_adc_config = {
 
 // i2s config for reading from I2S
 i2s_config_t i2s_mic_Config = {
-    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX),
+    .mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM),
     .sample_rate = SAMPLE_RATE,
     .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
     .channel_format = I2S_MIC_CHANNEL,
@@ -45,6 +45,7 @@ i2s_config_t i2s_mic_Config = {
     .fixed_mclk = 0};
 
 // i2s microphone pins
+// see https://github.com/m5stack/M5StickC/blob/master/examples/Basics/Micophone/Micophone.ino#L55C31-L55C49
 i2s_pin_config_t i2s_mic_pins = {
     .bck_io_num = I2S_MIC_SERIAL_CLOCK,
     .ws_io_num = I2S_MIC_LEFT_RIGHT_CLOCK,

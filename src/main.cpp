@@ -1,4 +1,4 @@
-#include <M5Atom.h>
+#include <M5StickCPlus.h>
 #include "Application.h"
 
 // our application
@@ -9,6 +9,7 @@ void setup()
   Serial.begin(115200);
   
   M5.begin(true,false,true);
+  M5.Lcd.begin();
   delay(50);
   Serial.println("M5 started");
 

@@ -1,4 +1,4 @@
-#include <M5Atom.h>
+#include <M5StickCPlus.h>
 
 #include "Output.h"
 #include <esp_log.h>

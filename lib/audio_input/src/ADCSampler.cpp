@@ -2,7 +2,7 @@
 
 #if CONFIG_IDF_TARGET_ESP32
 
-ADCSampler::ADCSampler(adc_unit_t adcUnit, adc1_channel_t adcChannel, const i2s_config_t &i2s_config) : I2SSampler(I2S_NUM_0, i2s_config)
+ADCSampler::ADCSampler(adc_unit_t adcUnit, adc1_channel_t adcChannel, const i2s_port_t i2s_num, const i2s_config_t &i2s_config) : I2SSampler(i2s_num, i2s_config)
 {
     m_adcUnit = adcUnit;
     m_adcChannel = adcChannel;
@@ -10,7 +10,7 @@ ADCSampler::ADCSampler(adc_unit_t adcUnit, adc1_channel_t adcChannel, const i2s_
 
 void ADCSampler::configureI2S()
 {
-    //init ADC pad
+    // init ADC pad
     i2s_set_adc_mode(m_adcUnit, m_adcChannel);
     // enable the adc
     i2s_adc_enable(m_i2sPort);

@@ -1,5 +1,8 @@
-#include <M5Atom.h>
+// #include <M5Atom.h>
+#include <M5StickCPlus.h>
+
 #include <driver/i2s.h>
+
 #include <WiFi.h>
 
 #include "Application.h"
@@ -16,7 +19,7 @@
 
 static void application_task(void *param)
 {
-  // delegate onto the application
+   // delegate onto the application
   Application *application = reinterpret_cast<Application *>(param);
   application->loop();
 }
@@ -25,9 +28,12 @@ Application::Application()
 {
   m_output_buffer = new OutputBuffer(300 * 16);
 
-  m_input = new I2SMEMSSampler(I2S_NUM_0, i2s_mic_pins, i2s_mic_Config,128);
-
-  m_output = new I2SOutput(I2S_NUM_0, i2s_speaker_pins);
+  m_input = new I2SMEMSSampler(I2S_NUM_MIC, i2s_mic_pins, i2s_mic_Config,128);
+#ifdef USE_I2S_SPEAKER_OUTPUT
+  m_output = new I2SOutput(I2S_NUM_SPEAKER, i2s_speaker_pins);
+#else
+  m_output = new DACOutput(I2S_NUM_SPEAKER);
+#endif
 
 #ifdef USE_ESP_NOW
   m_transport = new EspNowTransport(m_output_buffer,ESP_NOW_WIFI_CHANNEL);
@@ -39,7 +45,7 @@ Application::Application()
 
   m_indicator_led = new M5AtomIndicatorLed();
 
-  if (I2S_SPEAKER_SD_PIN != -1)
+  if constexpr (I2S_SPEAKER_SD_PIN != -1)
   {
     pinMode(I2S_SPEAKER_SD_PIN, OUTPUT);
   }
@@ -75,6 +81,7 @@ void Application::begin()
 #endif
   Serial.print("My MAC Address is: ");
   Serial.println(WiFi.macAddress());
+  digitalWrite(M5_LED,LOW);
   // do any setup of the transport
   m_transport->begin();
   // connected so show a solid green light
@@ -91,11 +98,12 @@ void Application::begin()
 void Application::loop()
 {
   int16_t *samples = reinterpret_cast<int16_t *>(malloc(sizeof(int16_t) * 128));
+
   // continue forever
   while (true)
   {
     // do we need to start transmitting?
-    if (M5.Btn.read())
+    if (M5.BtnA.read())
     {
       Serial.println("Started transmitting");
       m_indicator_led->set_is_flashing(true, 0xff0000);
@@ -105,7 +113,7 @@ void Application::loop()
       m_input->start();
       // transmit for at least 1 second or while the button is pushed
       unsigned long start_time = millis();
-      while (millis() - start_time < 1000 || M5.Btn.read())
+      while (millis() - start_time < 1000 || M5.BtnA.read())
       {
         // read samples from the microphone
         int samples_read = m_input->read(samples, 128);
@@ -129,12 +137,15 @@ void Application::loop()
       digitalWrite(I2S_SPEAKER_SD_PIN, HIGH);
     }
     unsigned long start_time = millis();
-    while (millis() - start_time < 1000 || !M5.Btn.read())
+    while (millis() - start_time < 1000 || !M5.BtnA.read())
     {
+      // Serial.println("Entered Transmitter loop");
       // read from the output buffer (which should be getting filled by the transport)
       m_output_buffer->remove_samples(samples, 128);
       // and send the samples to the speaker
+            // Serial.println("Write ");
       m_output->write(samples, 128);
+      // Serial.println("Finished Transmitter loop");
     }
     if (I2S_SPEAKER_SD_PIN != -1)
     {

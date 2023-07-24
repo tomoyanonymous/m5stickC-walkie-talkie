@@ -1,4 +1,4 @@
-#include <M5Atom.h>
+#include <M5StickCPlus.h>
 #include <freertos/FreeRTOS.h>
 #include "IndicatorLed.h"
 
@@ -10,7 +10,7 @@ void update_indicator_task(void *param)
     if (indicator->m_is_flashing)
     {
       indicator->set_led_rgb(indicator->m_flash_color);
-      vTaskDelay(100);
+      vTaskDelay(500);
     }
     indicator->set_led_rgb(indicator->m_default_color);
     vTaskDelay(100);
