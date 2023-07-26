@@ -1,4 +1,5 @@
 #include <M5StickCPlus.h>
+// #include <M5StickC.h>
 
 #include "Output.h"
 #include <esp_log.h>
@@ -36,14 +37,16 @@ void Output::write(int16_t *samples, int count)
     for (int i = 0; i < NUM_FRAMES_TO_SEND && sample_index < count; i++)
     {
       int sample = process_sample(samples[sample_index]);
-      m_frames[i * 2] = sample;  // left channel
-      m_frames[i * 2 + 1] = sample;  // right channel
+      m_frames[i * 2] = sample;     // left channel
+      m_frames[i * 2 + 1] = sample; // right channel
       samples_to_send++;
       sample_index++;
     }
     // write data to the i2s peripheral
     size_t bytes_written = 0;
-    i2s_write(m_i2s_port, m_frames, samples_to_send * sizeof(int16_t) * 2, &bytes_written, portMAX_DELAY);
+    auto ticks_to_wait = (100 / portTICK_RATE_MS); // important!!!
+
+    i2s_write(m_i2s_port, m_frames, samples_to_send * sizeof(int16_t) * 2, &bytes_written, ticks_to_wait);
     if (bytes_written != samples_to_send * sizeof(int16_t) * 2)
     {
       ESP_LOGE(TAG, "Did not write all bytes");

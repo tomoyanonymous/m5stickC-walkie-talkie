@@ -1,15 +1,17 @@
 # Overview
+Forked from [M5Atom Walkie Talkie](https://github.com/febalci/m5atom-walkie-talkie) by febalci which is further forked from [ESP32 Walkie Talkie](https://github.com/atomic14/esp32-walkie-talkie) by atomic14.
 
-Forked from the works of [ESP32 Walkie Talkie](https://github.com/atomic14/esp32-walkie-talkie) by atomic14, this is the M5Atom Lite version of the same project.
+This is the M5StickC Plus version of the same project.
 
 ### Required Hardware
 
-* 2 sets of M5Atom Lite
-* 2 sets of INMP441 omnidirectional i2s MEMS microphone
-* 2 sets of MAX98357 i2s amplifier
+* 2 sets of M5StickC Plus
+* 2 sets of i2s amplifier
 * 2 sets of 4 or 8 Ohm Speaker (Min 3W preferred)
 
 *If you use a breadboard, try to use shorter jumper cables since long or low quality jumper cables cause too much interference and noise for the INMP441 microphone.
+
+*You can use Speaker HAT **2** which uses i2s, not a normal Speaker HAT because internal ADC and DAC can be exclusively used and this project uses ADC for internal PDM microphone.
 
 <p align="center">
 <img src="img/IMG_4034.jpg" width="400" height="300">

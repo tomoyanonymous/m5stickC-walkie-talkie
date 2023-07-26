@@ -5,7 +5,7 @@
 
 /**
  * @brief Circular buffer for 8 bit unsigned PCM samples
- * 
+ *
  */
 class OutputBuffer
 {
@@ -94,6 +94,7 @@ public:
         m_available_samples--;
       }
     }
+    
     xSemaphoreGive(m_semaphore);
   }
 };

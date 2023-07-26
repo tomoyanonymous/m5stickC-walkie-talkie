@@ -5,7 +5,6 @@
 // For example, when TRANSPORT_HEADER_SIZE is defined as 3,  define transport_header for example as {0x1F, 0xCD, 0x01};
 uint8_t transport_header[TRANSPORT_HEADER_SIZE] = {};
 
-
 // i2s config for using the internal ADC
 #if CONFIG_IDF_TARGET_ESP32
 i2s_config_t i2s_adc_config = {
@@ -33,20 +32,25 @@ i2s_config_t i2s_mic_Config = {
     .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,
     .channel_format = I2S_MIC_CHANNEL,
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 2, 0)
+    // # if false
     .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_STAND_I2S),
 #else
     .communication_format = (i2s_comm_format_t)(I2S_COMM_FORMAT_I2S),
 #endif
     .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-    .dma_buf_count = 4,
-    .dma_buf_len = 64,
-    .use_apll = false,
-    .tx_desc_auto_clear = false,
-    .fixed_mclk = 0};
+    .dma_buf_count = 2,
+    .dma_buf_len = 128,
+    // .use_apll = false,
+    // .tx_desc_auto_clear = false,
+    // .fixed_mclk = 0
+};
 
 // i2s microphone pins
 // see https://github.com/m5stack/M5StickC/blob/master/examples/Basics/Micophone/Micophone.ino#L55C31-L55C49
 i2s_pin_config_t i2s_mic_pins = {
+#if (ESP_IDF_VERSION > ESP_IDF_VERSION_VAL(4, 3, 0))
+    .mck_io_num = I2S_PIN_NO_CHANGE,
+#endif
     .bck_io_num = I2S_MIC_SERIAL_CLOCK,
     .ws_io_num = I2S_MIC_LEFT_RIGHT_CLOCK,
     .data_out_num = I2S_PIN_NO_CHANGE,

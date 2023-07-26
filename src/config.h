@@ -2,6 +2,9 @@
 #include <driver/i2s.h>
 #include <driver/gpio.h>
 
+// #define MIC_ONLY_MODE
+#define SPEAKER_ONLY_MODE
+
 // WiFi credentials
 // #define WIFI_SSID << YOUR_SSID >>
 // #define WIFI_PSWD << YOUR_PASSWORD >>
@@ -15,12 +18,12 @@
 // I2S Microphone Settings
 // When using m5stickC's built in i2s microphone, PDM mode can be used only for I2S_NUM_0
 #define I2S_NUM_MIC I2S_NUM_0
-#define I2S_NUM_SPEAKER I2S_NUM_1
+#define I2S_NUM_SPEAKER I2S_NUM_0
 
 // Which channel is the I2S microphone on? I2S_CHANNEL_FMT_ONLY_LEFT or I2S_CHANNEL_FMT_ONLY_RIGHT
 // Generally they will default to LEFT - but you may need to attach the L/R pin to GND
 // #define I2S_MIC_CHANNEL I2S_CHANNEL_FMT_ONLY_LEFT
-#define I2S_MIC_CHANNEL I2S_CHANNEL_FMT_ONLY_RIGHT
+#define I2S_MIC_CHANNEL I2S_CHANNEL_FMT_ALL_RIGHT
 #define I2S_MIC_SERIAL_CLOCK I2S_PIN_NO_CHANGE //SCK - BCLK
 #define I2S_MIC_LEFT_RIGHT_CLOCK GPIO_NUM_0 //WS - LRC
 #define I2S_MIC_SERIAL_DATA GPIO_NUM_34 //SD

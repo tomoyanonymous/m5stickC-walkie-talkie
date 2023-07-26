@@ -1,6 +1,6 @@
 #include "I2SMEMSSampler.h"
 #include "soc/i2s_reg.h"
-
+#include <M5StickCPlus.h>
 I2SMEMSSampler::I2SMEMSSampler(
     i2s_port_t i2s_port,
     i2s_pin_config_t &i2s_pins,
@@ -31,6 +31,7 @@ void I2SMEMSSampler::configureI2S()
     }
 
     i2s_set_pin(m_i2sPort, &m_i2sPins);
+    i2s_set_clk(m_i2sPort,sample_rate(),I2S_BITS_PER_SAMPLE_16BIT,I2S_CHANNEL_MONO);
 }
 
 int I2SMEMSSampler::read(int16_t *samples, int count)
@@ -41,12 +42,14 @@ int I2SMEMSSampler::read(int16_t *samples, int count)
     {
         count = m_raw_samples_size; // Buffer is too small
     }
-    i2s_read(m_i2sPort, m_raw_samples, sizeof(int32_t) * count, &bytes_read, portMAX_DELAY);
+    auto ticks_to_wait = (100 / portTICK_RATE_MS); //important!!!
+    i2s_read(m_i2sPort, m_raw_samples, sizeof(int32_t) * count, &bytes_read,  ticks_to_wait);
     int samples_read = bytes_read / sizeof(int32_t);
     for (int i = 0; i < samples_read; i++)
     {
         int32_t temp = m_raw_samples[i] >> 11;
         samples[i] = (temp > INT16_MAX) ? INT16_MAX : (temp < -INT16_MAX) ? -INT16_MAX : (int16_t)temp;
     }
+    // Serial.println(samples[0]);
     return samples_read;
 }

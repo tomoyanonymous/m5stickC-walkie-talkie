@@ -1,4 +1,5 @@
 #include <M5StickCPlus.h>
+// #include <M5StickC.h>
 #include <freertos/FreeRTOS.h>
 #include "IndicatorLed.h"
 
@@ -7,6 +8,8 @@ void update_indicator_task(void *param)
   IndicatorLed *indicator = reinterpret_cast<IndicatorLed *>(param);
   while (true)
   {
+    // Serial.print("flash");
+    // Serial.println(indicator->m_default_color);
     if (indicator->m_is_flashing)
     {
       indicator->set_led_rgb(indicator->m_flash_color);
