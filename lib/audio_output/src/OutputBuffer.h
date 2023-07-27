@@ -73,7 +73,9 @@ public:
       // if we have no samples and we aren't already buffering then we need to start buffering
       if (m_available_samples == 0 && !m_buffering)
       {
-        Serial.println("Buffering");
+        Serial.println("Buffering ");
+        digitalWrite(10, HIGH);
+
         m_buffering = true;
         samples[i] = 0;
       }
@@ -87,6 +89,8 @@ public:
       {
         // we've buffered enough samples so no need to buffer anymore
         m_buffering = false;
+        // Serial.println("Received Data ");
+        digitalWrite(10, LOW);
         // just send back the samples we've got and move the read head forward
         int16_t sample = m_buffer[m_read_head];
         samples[i] = (sample - 128) << 5;
@@ -94,7 +98,7 @@ public:
         m_available_samples--;
       }
     }
-    
+
     xSemaphoreGive(m_semaphore);
   }
 };

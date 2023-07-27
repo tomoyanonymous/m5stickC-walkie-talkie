@@ -1,6 +1,7 @@
 
 #include "I2SSampler.h"
 #include "driver/i2s.h"
+#include <Arduino.h>
 
 I2SSampler::I2SSampler(i2s_port_t i2sPort, const i2s_config_t &i2s_config) : m_i2sPort(i2sPort), m_i2s_config(i2s_config)
 {
@@ -9,7 +10,10 @@ I2SSampler::I2SSampler(i2s_port_t i2sPort, const i2s_config_t &i2s_config) : m_i
 void I2SSampler::start()
 {
     //install and start i2s driver
-    i2s_driver_install(m_i2sPort, &m_i2s_config, 0, NULL);
+    auto res = i2s_driver_install(m_i2sPort, &m_i2s_config, 0, NULL);
+    if (res != ESP_OK){
+        Serial.println(esp_err_to_name(res));
+    }
     // set up the I2S configuration from the subclass
     configureI2S();
 }

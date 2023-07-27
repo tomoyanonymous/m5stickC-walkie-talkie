@@ -14,9 +14,9 @@ I2SMEMSSampler::I2SMEMSSampler(
     m_raw_samples = (int32_t *)malloc(sizeof(int32_t) * raw_samples_size);
 }
 
-I2SMEMSSampler::~I2SMEMSSampler() 
+I2SMEMSSampler::~I2SMEMSSampler()
 {
-  free(m_raw_samples);
+    free(m_raw_samples);
 }
 
 void I2SMEMSSampler::configureI2S()
@@ -30,26 +30,37 @@ void I2SMEMSSampler::configureI2S()
 #endif
     }
 
-    i2s_set_pin(m_i2sPort, &m_i2sPins);
-    i2s_set_clk(m_i2sPort,sample_rate(),I2S_BITS_PER_SAMPLE_16BIT,I2S_CHANNEL_MONO);
+    auto res = i2s_set_pin(m_i2sPort, &m_i2sPins);
+    if (res != ESP_OK)
+    {
+        Serial.println(esp_err_to_name(res));
+    }
+    auto res2 = i2s_set_clk(m_i2sPort, sample_rate(), I2S_BITS_PER_SAMPLE_16BIT, I2S_CHANNEL_MONO);
+    if (res2 != ESP_OK)
+    {
+        Serial.println(esp_err_to_name(res));
+    }
 }
 
 int I2SMEMSSampler::read(int16_t *samples, int count)
 {
     // read from i2s
     size_t bytes_read = 0;
-    if (count>m_raw_samples_size)
+    if (count > m_raw_samples_size)
     {
         count = m_raw_samples_size; // Buffer is too small
     }
-    auto ticks_to_wait = (100 / portTICK_RATE_MS); //important!!!
-    i2s_read(m_i2sPort, m_raw_samples, sizeof(int32_t) * count, &bytes_read,  ticks_to_wait);
+    // auto ticks_to_wait = (100 / portTICK_RATE_MS); // important!!!
+    auto ticks_to_wait = portMAX_DELAY;
+
+    i2s_read(m_i2sPort, m_raw_samples, sizeof(int32_t) * count, &bytes_read, ticks_to_wait);
     int samples_read = bytes_read / sizeof(int32_t);
     for (int i = 0; i < samples_read; i++)
     {
         int32_t temp = m_raw_samples[i] >> 11;
-        samples[i] = (temp > INT16_MAX) ? INT16_MAX : (temp < -INT16_MAX) ? -INT16_MAX : (int16_t)temp;
+        samples[i] = (temp > INT16_MAX) ? INT16_MAX : (temp < -INT16_MAX) ? -INT16_MAX
+                                                                          : (int16_t)temp;
     }
-    // Serial.println(samples[0]);
+    Serial.println(samples[0]);
     return samples_read;
 }

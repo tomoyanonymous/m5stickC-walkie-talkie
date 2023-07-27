@@ -44,8 +44,8 @@ void Output::write(int16_t *samples, int count)
     }
     // write data to the i2s peripheral
     size_t bytes_written = 0;
-    auto ticks_to_wait = (100 / portTICK_RATE_MS); // important!!!
-
+    // auto ticks_to_wait = (100 / portTICK_RATE_MS); // important!!!
+    auto ticks_to_wait = portMAX_DELAY;
     i2s_write(m_i2s_port, m_frames, samples_to_send * sizeof(int16_t) * 2, &bytes_written, ticks_to_wait);
     if (bytes_written != samples_to_send * sizeof(int16_t) * 2)
     {

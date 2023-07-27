@@ -5,6 +5,7 @@
     "SP_DEC.C": "cpp",
     "DTX.C": "cpp",
     "HOST.C": "cpp",
-    "VAD.C": "cpp"
+    "VAD.C": "cpp",
+    "*.tcc": "cpp"
   }
 }
